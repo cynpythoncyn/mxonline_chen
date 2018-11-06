@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'users.apps.UsersConfig',  # 1.注册users子应用
+    'course.apps.CourseConfig',
+    'operation.apps.OperationConfig',
+    'organization.apps.OrganizationConfig',
 ]
 AUTH_USER_MODEL = 'users.Userprofile' # 自定义用户模型类，要在setting中指定
 
