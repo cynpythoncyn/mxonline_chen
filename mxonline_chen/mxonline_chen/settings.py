@@ -16,6 +16,7 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 子应用放入apps文件夹中是，要指定路径
+sys.path.insert(0,os.path.join(BASE_DIR, "extra_apps"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'course.apps.CourseConfig',
     'operation.apps.OperationConfig',
     'organization.apps.OrganizationConfig',
+    'xadmin',
+    'crispy_forms',
 ]
 AUTH_USER_MODEL = 'users.Userprofile'  # 自定义用户模型类，要在setting中指定
 
@@ -49,7 +52,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -114,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # LANGUAGE_CODE = 'en-us'
 # TIME_ZONE = 'UTC'
 LANGUAGE_CODE = 'zh-hans'  # 3.配置语言
-TIME_ZONE = 'Asiz/Shanghai'  # 时区
+TIME_ZONE = 'Asia/Shanghai'  # 时区
 
 USE_I18N = True
 

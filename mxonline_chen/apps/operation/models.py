@@ -34,13 +34,11 @@ class CourseComments(models.Model):
 
 
 class UserFavorite(models.Model):
-
     FAVTYPE = (
-        (1,"课程"),
-        (2,"课程机构"),
-        (3,"讲师"),
+        (1, "课程"),
+        (2, "课程机构"),
+        (3, "讲师"),
     )
-
 
     user = models.ForeignKey(Userprofile, verbose_name="用户")
     fav_id = models.IntegerField(default=0, verbose_name="数据id")
