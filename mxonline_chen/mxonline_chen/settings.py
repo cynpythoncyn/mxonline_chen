@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 子应用放入apps文件夹中是，要指定路径
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -41,7 +43,7 @@ INSTALLED_APPS = [
     'operation.apps.OperationConfig',
     'organization.apps.OrganizationConfig',
 ]
-AUTH_USER_MODEL = 'users.Userprofile' # 自定义用户模型类，要在setting中指定
+AUTH_USER_MODEL = 'users.Userprofile'  # 自定义用户模型类，要在setting中指定
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'mxonline_chen.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # 指定模板路径
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
