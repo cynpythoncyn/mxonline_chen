@@ -4,7 +4,9 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 
+
 from .models import Userprofile
+from .forms import Login_form
 
 
 # Create your views here.
@@ -32,14 +34,20 @@ class LoginView(View):
         return render(request, "login.html", {})
 
     def post(self, request):
-        username = request.POST.get('username', '')
-        password = request.POST.get('password', '')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return render(request, 'index.html')
+
+        loginform = Login_form(request.POST)
+        if loginform.is_valid():
+            username = request.POST.get('username', '')
+            password = request.POST.get('password', '')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return render(request, 'index.html')
+            else:
+                return render(request,'login.html',{"msg":"用户名或密码错误！"})
+
         else:
-            return render(request, 'login.html', {})
+            return render(request, 'login.html', {"loginform":loginform})
 
 
 def login_chen(request):
