@@ -16,7 +16,7 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 子应用放入apps文件夹中是，要指定路径
-sys.path.insert(0,os.path.join(BASE_DIR, "extra_apps"))
+sys.path.insert(0, os.path.join(BASE_DIR, "extra_apps"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -31,9 +31,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 AUTHENTICATION_BACKENDS = [
-        'users.views.CustomBackend',
+    'users.views.CustomBackend',
 ]
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     'organization.apps.OrganizationConfig',
     'xadmin',
     'crispy_forms',
+    'captcha',
 ]
 AUTH_USER_MODEL = 'users.Userprofile'  # 自定义用户模型类，要在setting中指定
 
@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -67,7 +67,7 @@ ROOT_URLCONF = 'mxonline_chen.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # 指定模板路径
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # 指定模板路径
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,5 +134,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,'static')
+    os.path.join(BASE_DIR, 'static')
 ]
+# 定义发送邮件所需要的配置
+EMAIL_HOST = "smtp.sina.com"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "projectsedu@sina.com"
+EMAIL_HOST_PASSWORD = "admin123"
+EMAIL_USE_TLS = False
+EMAIL_FROM = "projectsedu@sina.com"
