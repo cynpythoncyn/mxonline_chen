@@ -82,7 +82,7 @@
                     <div class="error btns login-form-tips" id="jsLoginTips">{% for key,error in loginform.errors.items %}{{ error }}{% endfor %}{{ msg }}</div>
                      <div class="auto-box marb38">
 {#                        <label><input type="checkbox" id="jsAutoLogin"> 自动登录</label>#}
-                        <a class="fr" href="forgetpwd.html">忘记密码？</a>
+                        <a class="fr" href="{% url 'forget_pwd' %}">忘记密码？</a>
                      </div>
                      <input class="btn btn-green"  type="submit" value="立即登录 > " />
                     {% csrf_token %}

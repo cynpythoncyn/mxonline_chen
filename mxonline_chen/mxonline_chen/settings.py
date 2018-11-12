@@ -137,9 +137,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 # 定义发送邮件所需要的配置
-EMAIL_HOST = "smtp.sina.com"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = "smtp.qq.com"
 EMAIL_PORT = 25
-EMAIL_HOST_USER = "projectsedu@sina.com"
-EMAIL_HOST_PASSWORD = "admin123"
+EMAIL_HOST_USER = "1105690826@qq.com"
+EMAIL_HOST_PASSWORD = "cfyuhfrckuatfjgf"
 EMAIL_USE_TLS = False
-EMAIL_FROM = "projectsedu@sina.com"
+EMAIL_FROM = "1105690826@qq.com"

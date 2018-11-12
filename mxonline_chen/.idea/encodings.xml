@@ -2,15 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/static" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/base.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/index.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/index.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/index.html" charset="GBK" />
     <file url="file://$PROJECT_DIR$/templates/index.html" charset="GBK" />
     <file url="file://$PROJECT_DIR$/templates/login.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/login.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/login.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/register.html" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/templates/register.html" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/templates/password_reset.html" charset="GBK" />
   </component>
 </project>
