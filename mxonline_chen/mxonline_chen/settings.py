@@ -46,9 +46,11 @@ INSTALLED_APPS = [
     'course.apps.CourseConfig',
     'operation.apps.OperationConfig',
     'organization.apps.OrganizationConfig',
-    'xadmin',
+
+    'xadmin',  # 集成xadmin
     'crispy_forms',
-    'captcha',
+    'captcha',  # 集成图片验证码
+    'pure_pagination',  # 集成分页功能
 ]
 AUTH_USER_MODEL = 'users.Userprofile'  # 自定义用户模型类，要在setting中指定
 
@@ -75,6 +77,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 配置上传图片处理
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -144,3 +148,6 @@ EMAIL_HOST_USER = "1105690826@qq.com"
 EMAIL_HOST_PASSWORD = "cfyuhfrckuatfjgf"
 EMAIL_USE_TLS = False
 EMAIL_FROM = "1105690826@qq.com"
+# 图片上传保存路径
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
