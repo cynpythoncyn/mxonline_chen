@@ -131,7 +131,9 @@
 <script src="{% static 'js/validateDialog.js' %}"  type="text/javascript"></script>
 <script src="{% static 'js/deco-common.js' %}"  type="text/javascript"></script>
 
-<script>
+
+{% block custom_js %}
+    <script>
     $(function(){
         $('#jsStayBtn').on('click', function(){
             var _this = $(this);
@@ -176,6 +178,6 @@
         });
     })
 </script>
-{% block custom_js %}{% endblock %}
+{% endblock %}
 </body>
 </html>

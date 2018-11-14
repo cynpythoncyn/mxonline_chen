@@ -3,20 +3,58 @@ from django.shortcuts import render
 # Create your views here.
 from django.views.generic.base import View
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse,JsonResponse
 
+from .models import CourseOrg, CityDict
+from .forms import UserAskForm
 
-from .models import CourseOrg,CityDict
+class UseraskView(View):
+    """
+    添加用户咨询接口
+    """
+    def post(self,request):
+        user_ask_form = UserAskForm(request.POST)
+        if user_ask_form.is_valid():
+            user_ask = user_ask_form.save(commit=True)
+            return JsonResponse({'status':'success'})
+        else:
+            return JsonResponse({'status':'fail','msg':'添加出错！666chen'})
+
 
 
 class OrglistView(View):
     """
     课程机构列表接口
     """
-    def get(self,request):
+
+    def get(self, request):
         # 课程机构
         all_orgs = CourseOrg.objects.all()
+        # 热门机构
+        hot_orgs = all_orgs.order_by("-click_nums")[:3]
         # 城市
         all_citys = CityDict.objects.all()
+
+
+        # 取出筛选城市
+        city_id = request.GET.get('city','')
+        if city_id:
+            all_orgs = all_orgs.filter(city_id=int(city_id))
+
+        # 机构分类
+        category = request.GET.get('category','')
+        if category:
+            all_orgs = all_orgs.filter(category=category)
+
+        # 排序
+        sort = request.GET.get('sort','')
+        if sort:
+            if sort == 'students':
+
+                all_orgs = all_orgs.order_by(sort="-students")
+            elif sort == 'cousors':
+                all_orgs = all_orgs.order_by(sort="-course_nums")
+
         # 机构数量
         org_nums = CourseOrg.objects.count()
 
@@ -26,13 +64,17 @@ class OrglistView(View):
         except PageNotAnInteger:
             page = 1
 
-        p = Paginator(all_orgs,1,request=request)
+        p = Paginator(all_orgs, 5, request=request)
 
         orgs_c = p.page(page)
 
+        return render(request, 'org-list.html', {
+            "all_orgs": orgs_c,
+            "all_citys": all_citys,
+            "org_nums": org_nums,
+            "category": category,
+            "city_id": city_id,
+            "sort": sort,
+            "hot_orgs": hot_orgs,
 
-        return render(request,'org-list.html',{
-            "all_orgs":orgs_c,
-            "all_citys":all_citys,
-            "org_nums":org_nums,
         })
