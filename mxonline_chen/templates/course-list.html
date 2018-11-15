@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+课程列表页
+{% endblock %}
+{% block bread %}
+公开课程
+{% endblock %}
+
+
+{% block content %}
+<section>
+	<div class="wp">
+		<div class="list" style="margin-top:0;">
+			<div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li class="{% ifequal sort '' %}active{% endifequal %}"><a href="?sort=">最新 </a></li>
+						<li class="{% ifequal sort 'student' %}active{% endifequal %}"><a href="?sort=student">最热门</a></li>
+						<li class="{% ifequal sort 'hot' %}active{% endifequal %}"><a href="?sort=hot">参与人数</a></li>
+					</ul>
+				</div>
+                <div id="inWindow">
+                    <div class="tab_cont " id="content">
+					<div class="group_list">
+                        {% for course in all_courses.object_list %}
+                         <div class="box">
+                                <a href="course-detail.html">
+                                    <img width="280" height="350" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ course.image }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="course-detail.html">
+                                        <h2>{{ course.name }}</h2>
+                                    </a>
+                                    <span class="fl">时长：<i class="key">{{ course.learn_times }}小时</i></span>
+                                    <span class="fr">学习人数：{{ course.students }}&nbsp;&nbsp;</span>
+                                </div>
+                                <div class="bottom">
+                                    <a href="org-detail-homepage.html"><span class="fl">{{ course.course_org.name }}</span></a>
+                                    <span class="star fr  notlogin
+                                        " data-favid="15">
+                                        {{ course.fav_nums }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+					</div>>
+
+                    <div class="pageturn">
+                        <ul class="pagelist">
+                {% if all_courses.has_previous %}
+                    <li class="long"><a href="?{{ all_courses.previous_page_number.querystring }}">上一页</a></li>
+              {% endif %}
+
+            {% for page in all_courses.pages %}
+                {% if page %}
+                    {% ifequal page all_courses.number %}
+                        <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                    {% else %}
+                        <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+
+                    {% endifequal %}
+                {% else %}
+                    <li class="none"><a href="">...</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if all_courses.has_next %}
+                <li class="long"><a href="?{{ all_courses.next_page_number.querystring }}">下一页</a></li>
+            {% endif %}
+            </ul>
+                    </div>
+				</div>
+                </div>
+
+			</div>
+			<div class="right layout">
+				<div class="head">热门课程推荐</div>
+				<div class="group_recommend">
+                    {% for hot_course in hot_courses %}
+
+                    <dl>
+						<dt>
+							<a target="_blank" href="{{ ecmall_ad.url }}">
+								<img width="240" height="220" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ hot_course.image }}" />
+							</a>
+						</dt>
+						<dd>
+							<a target="_blank" href="{{ ecmall_ad.url }}"><h2>{{ hot_course.name }}</h2></a>
+							<span class="fl">难度：<i class="key">{{ hot_course.get_degree_display }}</i></span>
+						</dd>
+					</dl>
+                    {% endfor %}
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block custom_js %}
+<script type="text/javascript" src="../ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="../ueditor/ueditor.all.min.js"></script>
+
+    <script type="text/javascript">
+/*列表加载*/
+$(function() {
+    $('.tab_header a').on('click', function(){
+        $(this).parent().addClass('active').siblings().removeClass('active');
+    });
+
+    $('#jsGroupOver').on('change', function(){
+        var _self = $(this),
+            parentNode = _self.parents('li'),
+            url = '?order_by=time&is_expire=';
+        parentNode.addClass('active').siblings().removeClass('active');
+        if(_self.is(':checked')){
+            url = '?order_by=time&is_expire=yes';
+        }
+        window.location.href = url;
+    });
+
+
+    $('.jsFavBtn').on('click', function(){
+        favPraise($(this), 'fav' ,4 );
+    });
+
+});
+</script>
+
+<script>
+        var shareUrl = '',
+            shareText = '',
+            shareDesc = '',
+            shareComment = '';
+        $(function () {
+            $(".bdsharebuttonbox a").mouseover(function () {
+                var type = $(this).attr('data-cmd'),
+                    $parent = $(this).parent('.bdsharebuttonbox'),
+                    fxurl = $parent.attr('data-url'),
+                    fxtext = $parent.attr('data-text'),
+                    fxdesc = $parent.attr('data-desc'),
+                    fxcomment = $parent.attr('data-comment');
+                switch (type){
+                    case 'tsina':
+                    case 'tqq':
+                    case 'renren':
+                            shareUrl = fxurl;
+                            shareText = fxdesc;
+                            shareDesc = '';
+                            shareComment = '';
+                        break;
+                    default :
+                            shareUrl = fxurl;
+                            shareText = fxtext;
+                            shareDesc = fxdesc;
+                            shareComment = fxcomment;
+                        break;
+                }
+            });
+        });
+        function SetShareUrl(cmd, config) {
+            if (shareUrl) {
+                config.bdUrl = "http://www.domile.com.cn" + shareUrl;
+            }
+            if(shareText){
+                config.bdText = shareText;
+            }
+            if(shareDesc){
+                config.bdDesc = shareDesc;
+            }
+            if(shareComment){
+                config.bdComment = shareComment;
+            }
+
+            return config;
+        }
+        window._bd_share_config = {
+            "common": {
+                "onBeforeClick":SetShareUrl,
+                "bdPic":"http://www.domile.com.cn../images/logo2.png",
+                "bdMini":"2",
+                "searchPic":"1",
+                "bdMiniList":false
+            },
+            "share": {
+                "bdSize":"16"
+            }
+        };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+{% endblock %}
+
+
