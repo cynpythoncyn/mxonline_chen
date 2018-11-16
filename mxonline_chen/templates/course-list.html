@@ -4,7 +4,14 @@
 课程列表页
 {% endblock %}
 {% block bread %}
-公开课程
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="/">首页</a>></li>
+                <li>公开课</li>
+            </ul>
+        </div>
+    </section>
 {% endblock %}
 
 
@@ -25,18 +32,18 @@
 					<div class="group_list">
                         {% for course in all_courses.object_list %}
                          <div class="box">
-                                <a href="course-detail.html">
+                                <a href="{% url 'course:detail' course.id%}">
                                     <img width="280" height="350" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ course.image }}"/>
                                 </a>
                                 <div class="des">
-                                    <a href="course-detail.html">
+                                    <a href="{% url 'course:detail' course.id%}">
                                         <h2>{{ course.name }}</h2>
                                     </a>
                                     <span class="fl">时长：<i class="key">{{ course.learn_times }}小时</i></span>
                                     <span class="fr">学习人数：{{ course.students }}&nbsp;&nbsp;</span>
                                 </div>
                                 <div class="bottom">
-                                    <a href="org-detail-homepage.html"><span class="fl">{{ course.course_org.name }}</span></a>
+                                    <a href="{% url 'course:detail' course.id%}"><span class="fl">{{ course.course_org.name }}</span></a>
                                     <span class="star fr  notlogin
                                         " data-favid="15">
                                         {{ course.fav_nums }}
@@ -101,95 +108,40 @@
 </section>
 {% endblock %}
 {% block custom_js %}
-<script type="text/javascript" src="../ueditor/ueditor.config.js"></script>
-    <script type="text/javascript" src="../ueditor/ueditor.all.min.js"></script>
-
-    <script type="text/javascript">
-/*列表加载*/
-$(function() {
-    $('.tab_header a').on('click', function(){
-        $(this).parent().addClass('active').siblings().removeClass('active');
-    });
-
-    $('#jsGroupOver').on('change', function(){
-        var _self = $(this),
-            parentNode = _self.parents('li'),
-            url = '?order_by=time&is_expire=';
-        parentNode.addClass('active').siblings().removeClass('active');
-        if(_self.is(':checked')){
-            url = '?order_by=time&is_expire=yes';
-        }
-        window.location.href = url;
-    });
-
-
-    $('.jsFavBtn').on('click', function(){
-        favPraise($(this), 'fav' ,4 );
-    });
-
-});
-</script>
-
-<script>
-        var shareUrl = '',
-            shareText = '',
-            shareDesc = '',
-            shareComment = '';
-        $(function () {
-            $(".bdsharebuttonbox a").mouseover(function () {
-                var type = $(this).attr('data-cmd'),
-                    $parent = $(this).parent('.bdsharebuttonbox'),
-                    fxurl = $parent.attr('data-url'),
-                    fxtext = $parent.attr('data-text'),
-                    fxdesc = $parent.attr('data-desc'),
-                    fxcomment = $parent.attr('data-comment');
-                switch (type){
-                    case 'tsina':
-                    case 'tqq':
-                    case 'renren':
-                            shareUrl = fxurl;
-                            shareText = fxdesc;
-                            shareDesc = '';
-                            shareComment = '';
-                        break;
-                    default :
-                            shareUrl = fxurl;
-                            shareText = fxtext;
-                            shareDesc = fxdesc;
-                            shareComment = fxcomment;
-                        break;
+<script type="text/javascript">
+//收藏分享
+function add_fav(current_elem, fav_id, fav_type){
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url:"{% url "org:add_fav" %}",
+        data:{'fav_id':fav_id, 'fav_type':fav_type},
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(data) {
+            if(data.status == 'fail'){
+                if(data.msg == '用户未登录'){
+                    window.location.href="/login/";
+                }else{
+                    alert(data.msg)
                 }
-            });
-        });
-        function SetShareUrl(cmd, config) {
-            if (shareUrl) {
-                config.bdUrl = "http://www.domile.com.cn" + shareUrl;
-            }
-            if(shareText){
-                config.bdText = shareText;
-            }
-            if(shareDesc){
-                config.bdDesc = shareDesc;
-            }
-            if(shareComment){
-                config.bdComment = shareComment;
-            }
 
-            return config;
-        }
-        window._bd_share_config = {
-            "common": {
-                "onBeforeClick":SetShareUrl,
-                "bdPic":"http://www.domile.com.cn../images/logo2.png",
-                "bdMini":"2",
-                "searchPic":"1",
-                "bdMiniList":false
-            },
-            "share": {
-                "bdSize":"16"
+            }else if(data.status == 'success'){
+                current_elem.text(data.msg)
             }
-        };
-    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        },
+    });
+}
+
+$('#jsLeftBtn').on('click', function(){
+    add_fav($(this), {{ course.id }}, 1);
+});
+
+$('#jsRightBtn').on('click', function(){
+    add_fav($(this), {{ course.course_org.id }}, 2);
+});
 </script>
 
 {% endblock %}
