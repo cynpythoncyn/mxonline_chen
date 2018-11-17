@@ -33,14 +33,14 @@ class CourseOrg(models.Model):
     )
     name = models.CharField(max_length=50, verbose_name="机构名称")
     desc = models.TextField(verbose_name="机构描述")
-    category = models.CharField(default='pxjg',verbose_name='机构分类',choices=CATEGORY_ORG,max_length=20)
+    category = models.CharField(default='pxjg', verbose_name='机构分类', choices=CATEGORY_ORG, max_length=20)
     click_nums = models.IntegerField(default=0, verbose_name="点击数")
     fav_nums = models.IntegerField(default=0, verbose_name="收藏数")
     image = models.ImageField(upload_to="org/%Y/%m", verbose_name="logo")
     address = models.CharField(max_length=150, verbose_name="机构地址")
     city = models.ForeignKey(CityDict, verbose_name="机构所在城市")
     students = models.IntegerField(default=0, verbose_name="学习人数")
-    course_nums = models.IntegerField(default=0,verbose_name="课程数")
+    course_nums = models.IntegerField(default=0, verbose_name="课程数")
     add_time = models.DateTimeField(default=datetime.now)
 
     class Meta:
@@ -67,7 +67,7 @@ class Teacher(models.Model):
     points = models.CharField(max_length=50, verbose_name="教学特点")
     click_nums = models.IntegerField(default=0, verbose_name="点击数")
     fav_nums = models.IntegerField(default=0, verbose_name="收藏数")
-    image = models.ImageField(upload_to="teacher/%Y/%m",verbose_name="讲师头像",default="",max_length=50)
+    image = models.ImageField(upload_to="teacher/%Y/%m", verbose_name="讲师头像", default="", max_length=50)
     add_time = models.DateTimeField(default=datetime.now)
 
     class Meta:
