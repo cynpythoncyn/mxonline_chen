@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -5,7 +6,55 @@ from django.views.generic.base import View
 from pure_pagination import Paginator, PageNotAnInteger
 
 from .models import Course,CourseResource
-from operation.models import UserFavorite
+from operation.models import UserFavorite,CourseComments
+
+
+class Add_commentView(View):
+    """
+    发表评论接口
+    """
+    def post(self,request):
+        if not request.user.is_authenticated():
+            return JsonResponse({'status':'fail','msg':'用户未登陆'})
+        course_id = request.POST.get('course_id',0)
+        comments = request.POST.get('comments','')
+        if int(course_id) > 0 and comments:
+            course_comment = CourseComments()
+            course = Course.objects.get(id=int(course_id))
+            course_comment.course = course
+            course_comment.comments = comments
+            course_comment.user = request.user
+            course_comment.save()
+            return JsonResponse({'status':'success','msg':'添加成功'})
+        else:
+            return JsonResponse({'status': 'fail', 'msg': '添加失败'})
+
+
+
+class CommentView(View):
+    """
+    课程评论
+
+    """
+    def get(self,request,course_id):
+        course = Course.objects.get(id=int(course_id))
+
+        course_resc = course.courseresource_set.all()
+        all_comments = CourseComments.objects.all()
+
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        p = Paginator(all_comments, 2, request=request)
+
+        course_p = p.page(page)
+        return render(request, 'course-comment.html', {
+            'course': course,
+            'course_resc': course_resc,
+            'all_comments': course_p,
+        })
 
 
 class CourselessonView(View):
