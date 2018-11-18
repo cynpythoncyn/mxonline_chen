@@ -5,19 +5,21 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from pure_pagination import Paginator, PageNotAnInteger
 
-from .models import Course,CourseResource
-from operation.models import UserFavorite,CourseComments
+from .models import Course, CourseResource
+from operation.models import UserFavorite, CourseComments,UserCourse
+from utils.mixin_login import LoginRequiredMixin
 
 
 class Add_commentView(View):
     """
-    发表评论接口
+    添加评论接口
     """
-    def post(self,request):
+
+    def post(self, request):
         if not request.user.is_authenticated():
-            return JsonResponse({'status':'fail','msg':'用户未登陆'})
-        course_id = request.POST.get('course_id',0)
-        comments = request.POST.get('comments','')
+            return JsonResponse({'status': 'fail', 'msg': '用户未登陆'})
+        course_id = request.POST.get('course_id', 0)
+        comments = request.POST.get('comments', '')
         if int(course_id) > 0 and comments:
             course_comment = CourseComments()
             course = Course.objects.get(id=int(course_id))
@@ -25,18 +27,18 @@ class Add_commentView(View):
             course_comment.comments = comments
             course_comment.user = request.user
             course_comment.save()
-            return JsonResponse({'status':'success','msg':'添加成功'})
+            return JsonResponse({'status': 'success', 'msg': '添加成功'})
         else:
             return JsonResponse({'status': 'fail', 'msg': '添加失败'})
 
 
-
-class CommentView(View):
+class CommentView(LoginRequiredMixin, View):
     """
     课程评论
 
     """
-    def get(self,request,course_id):
+
+    def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
 
         course_resc = course.courseresource_set.all()
@@ -57,13 +59,34 @@ class CommentView(View):
         })
 
 
-class CourselessonView(View):
+class CourselessonView(LoginRequiredMixin,View):
     """
     章节详情页
     """
 
     def get(self, request, course_id):
+        # 根据前端传来的课程id，查找出课程
         course = Course.objects.get(id=int(course_id))
+
+        # 查询用户是否已经关联了该课程
+        user_courses = UserCourse.objects.filter(user=request.user,course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user,course=course)
+            user_course.save()
+
+        # 根据课程，查出所有学过这门课程的用户
+        user_courses = UserCourse.objects.filter(course=course)
+
+        # 使用python列表推导式查出所有用户的id
+        user_ids = [user_course.user.id for user_course in user_courses]
+
+        # 根据用户的id找出用户还学过的其它课程
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        #然后查出相应课程的id
+        course_ids = [us_course.course.id for us_course in all_user_courses]
+
+        # 最后根据课程id，查询出学习该课程的用户还学过其它的课程
+        relater_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums")[:5]
 
         # course_resc = course.courseresource_set.all()
         # 这两种查询方式得到的结果一样
@@ -71,6 +94,7 @@ class CourselessonView(View):
         return render(request, 'course-video.html', {
             'course': course,
             'course_resc': course_resc,
+            'relater_courses': relater_courses,
         })
 
 
