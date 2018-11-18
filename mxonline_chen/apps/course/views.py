@@ -5,9 +5,51 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from pure_pagination import Paginator, PageNotAnInteger
 
-from .models import Course, CourseResource
+from .models import Course, CourseResource,Video
 from operation.models import UserFavorite, CourseComments,UserCourse
 from utils.mixin_login import LoginRequiredMixin
+
+
+class Video_playView(View):
+    """
+    视频播放页面
+    """
+    def get(self, request, video_id):
+        # 根据前端传来的课程id，查找出课程
+        all_videos = Video.objects.get(id=int(video_id))
+        course = all_videos.lesson.course
+
+        course.students += 1
+        course.save()
+        # 查询用户是否已经关联了该课程
+        user_courses = UserCourse.objects.filter(user=request.user,course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user,course=course)
+            user_course.save()
+
+        # 根据课程，查出所有学过这门课程的用户
+        user_courses = UserCourse.objects.filter(course=course)
+
+        # 使用python列表推导式查出所有用户的id
+        user_ids = [user_course.user.id for user_course in user_courses]
+
+        # 根据用户的id找出用户还学过的其它课程
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        #然后查出相应课程的id
+        course_ids = [us_course.course.id for us_course in all_user_courses]
+
+        # 最后根据课程id，查询出学习该课程的用户还学过其它的课程
+        relater_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums")[:5]
+
+        # course_resc = course.courseresource_set.all()
+        # 这两种查询方式得到的结果一样
+        course_resc = CourseResource.objects.filter(course=course)
+        return render(request, 'course_play.html', {
+            'course': course,
+            'course_resc': course_resc,
+            'relater_courses': relater_courses,
+            'all_videos': all_videos,
+        })
 
 
 class Add_commentView(View):
@@ -37,7 +79,6 @@ class CommentView(LoginRequiredMixin, View):
     课程评论
 
     """
-
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
 
@@ -67,6 +108,8 @@ class CourselessonView(LoginRequiredMixin,View):
     def get(self, request, course_id):
         # 根据前端传来的课程id，查找出课程
         course = Course.objects.get(id=int(course_id))
+        course.students += 1
+        course.save()
 
         # 查询用户是否已经关联了该课程
         user_courses = UserCourse.objects.filter(user=request.user,course=course)
