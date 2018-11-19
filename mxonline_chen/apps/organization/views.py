@@ -5,9 +5,45 @@ from django.views.generic.base import View
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 
-from .models import CourseOrg, CityDict
+from .models import CourseOrg, CityDict, Teacher
 from .forms import UserAskForm
 from operation.models import UserFavorite
+
+
+class TeacherlistView(View):
+    """
+    授课讲师列表接口
+    """
+
+    def get(self, request):
+
+        all_teachers = Teacher.objects.all()
+        # 讲师数量
+        teacher_nums = all_teachers.count()
+        # 讲师排行
+        sorted_teachers = all_teachers.order_by('-click_nums')[:3]
+
+        # 讲师人气
+        sort = request.GET.get('sort', '')
+        if sort:
+            if sort == 'hot':
+                all_teachers = all_teachers.order_by('-click_nums')
+
+        # 对讲师进行分页排行
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        p = Paginator(all_teachers, 1, request=request)
+        teacher_p = p.page((page))
+
+        return render(request, 'teachers-list.html', {
+            'all_teachers': teacher_p,
+            'teacher_nums': teacher_nums,
+            'sorted_teachers': sorted_teachers,
+            'sort': sort,
+        })
 
 
 class AddfavView(View):
