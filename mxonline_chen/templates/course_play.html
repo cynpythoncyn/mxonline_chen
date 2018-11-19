@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block title %}
-章节详情页
+{{ all_videos.name }}-慕学在线网
 {% endblock %}
 {% block custom_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/learn-less.css' %}" />
@@ -26,8 +26,8 @@
 			<ul>
 				<li><a href="/">首页</a>></li>
                 <li><a href="{% url 'course:list' %}">公开课程</a>></li>
-				<li><a href="{% url 'course:detail' course.id %}">课程详情</a>></li>
-				<li>章节视频信息</li>
+				<li><a href="{% url 'course:detail' course.id %}">{{ course.name }}</a>></li>
+				<li>{{ all_videos.name }}</li>
 			</ul>
 		</div>
 	</div>
@@ -68,7 +68,7 @@
                             {% for video in lesson.get_lesson_video %}
 
                             <li>
-                                <a target="_blank" href='/video/3662' class="J-media-item studyvideo">{{ video.name }} ({{ video.learn_times }})
+                                <a target="_blank" href='{% url "course:video_play" video.id %}' class="J-media-item studyvideo">{{ video.name }} ({{ video.learn_times }})
                                     <i class="study-state"></i>
                                 </a>
                             </li>

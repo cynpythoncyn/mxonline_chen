@@ -19,6 +19,7 @@ class Video_playView(View):
         all_videos = Video.objects.get(id=int(video_id))
         course = all_videos.lesson.course
 
+        # 学习人数增加
         course.students += 1
         course.save()
         # 查询用户是否已经关联了该课程
