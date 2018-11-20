@@ -28,7 +28,7 @@
             {% for teacher in all_teachers.object_list %}
             <dl class="des">
 					<dt>
-						<a href="teacher-detail.html">
+						<a href="{% url 'org:teacher_detail' teacher.id %}">
                             <div class="picpic">
                                 <img width="100" height="100" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ teacher.image }}"/>
                             </div>
@@ -49,7 +49,7 @@
 						</div>
 					</dt>
 					<dd>
-						<a href="teacher-detail.html">
+						<a href="{% url 'org:teacher_detail' teacher.id %}">
                             <h1>{{ teacher.name }}<span class="key picbig">金牌讲师</span></h1>
                         </a>
 						<ul class="cont">
@@ -61,7 +61,7 @@
 							<li>教学特点：<span>{{ teacher.points }}</span></li>
 						</ul>
 					</dd>
-                    <a class="buy buyservice" href="teacher-detail.html"><br/>查看<br/>详情</a>
+                    <a class="buy buyservice" href="{% url 'org:teacher_detail' teacher.id %}"><br/>查看<br/>详情</a>
                 </dl>
             {% endfor %}
 
@@ -93,20 +93,20 @@
 	</div>
 	<div class="right layout">
 		<div class="head">讲师排行榜</div>
-        {% for sorted in sorted_teachers %}
+        {% for hot_teacher in sorted_teachers %}
 
             <dl class="des">
                 <span class="num fl">{{ forloop.counter }}</span>
-                <a href="/diary/hk_detail/6/">
+                <a href="{% url 'org:teacher_detail' hot_teacher.id %}">
                     <dt>
-                        <img width="50" height="50" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ sorted.image }}" />
+                        <img width="50" height="50" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ hot_teacher.image }}" />
                     </dt>
                 </a>
                 <dd>
-                    <a href="/diary/hk_detail/6/">
-                        <h1 title="欧阳锋">{{ sorted.name }}</h1>
+                    <a href="{% url 'org:teacher_detail' hot_teacher.id %}">
+                        <h1 title="欧阳锋">{{ hot_teacher.name }}</h1>
                     </a>
-                    <p>工龄：<span>{{ sorted.work_years }}年</span></p>
+                    <p>工龄：<span>{{ hot_teacher.work_years }}年</span></p>
                 </dd>
             </dl>
         {% endfor %}

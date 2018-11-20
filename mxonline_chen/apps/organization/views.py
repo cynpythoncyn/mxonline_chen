@@ -10,6 +10,46 @@ from .forms import UserAskForm
 from operation.models import UserFavorite
 
 
+class TeacherdetailView(View):
+    """
+    讲师详情页接口
+    """
+
+    def get(self, request, teacher_id):
+        teacher_dt = Teacher.objects.get(id=int(teacher_id))
+        teacher_courses = teacher_dt.course_set.all()
+        # 讲师排行
+        sorted_teachers = Teacher.objects.all().order_by('-click_nums')[:3]
+
+        # 当页面刷新时，显示收藏状态
+        has_teacher_faved = False
+        if request.user.is_authenticated():
+            if UserFavorite.objects.filter(user=request.user, fav_type=3, fav_id=teacher_dt.id):
+                has_teacher_faved = True
+        has_org_faved = False
+        if request.user.is_authenticated():
+            if UserFavorite.objects.filter(user=request.user,fav_id=teacher_dt.org.id,fav_type=2):
+                has_org_faved = True
+
+
+        # 对讲师的课程进行分页
+        try:
+            page = request.GET.get('page',1)
+        except PageNotAnInteger:
+            page = 1
+        p = Paginator(teacher_courses,1,request=request)
+        teacher_courses_p = p.page(page)
+
+        return render(request, 'teacher-detail.html', {
+            'teacher_dt': teacher_dt,
+            'teacher_courses': teacher_courses_p,
+            'sorted_teachers': sorted_teachers,
+            'has_teacher_faved': has_teacher_faved,
+            'has_org_faved': has_org_faved,
+
+        })
+
+
 class TeacherlistView(View):
     """
     授课讲师列表接口
