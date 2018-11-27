@@ -8,9 +8,31 @@ from django.db.models import Q
 from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
 from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm
+from utils.mixin_login import LoginRequiredMixin
 
 
 # Create your views here.
+
+class UserinfoView(LoginRequiredMixin,View):
+    """
+    用户个人中心
+    """
+    def get(self,request):
+
+        return render(request,'usercenter-info.html',{
+
+        })
+
+
+
+
+
+
+
+
+
+
+
 class ModifyPwdView(View):
     """
     修改密码接口
