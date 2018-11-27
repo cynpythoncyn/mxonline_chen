@@ -4,14 +4,32 @@ from django.views.generic.base import View
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
+from django.http import JsonResponse
 
 from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
-from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm
+from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm,UploadImageForm
 from utils.mixin_login import LoginRequiredMixin
 
 
 # Create your views here.
+
+class UploadImageView(LoginRequiredMixin,View):
+    """
+    用户修改头像
+    """
+    def post(self,request):
+        uploadimage = UploadImageForm(request.POST,request.FILES,instance=request.user)
+        if uploadimage.is_valid():
+            # 如果不传入instance，
+            # userimage = uploadimage.cleaned_data['image']
+            # request.user.image = userimage
+            # request.user.save()
+            uploadimage.save()
+            return JsonResponse({
+                "status":"success"
+            })
+        return JsonResponse({"status":"fail"})
 
 class UserinfoView(LoginRequiredMixin,View):
     """
@@ -22,15 +40,6 @@ class UserinfoView(LoginRequiredMixin,View):
         return render(request,'usercenter-info.html',{
 
         })
-
-
-
-
-
-
-
-
-
 
 
 class ModifyPwdView(View):

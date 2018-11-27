@@ -1,6 +1,17 @@
 from django import forms
 from captcha.fields import CaptchaField
 
+from .models import Userprofile
+
+
+class UploadImageForm(forms.ModelForm):
+    """
+    上传图片
+    """
+    class Meta:
+        model = Userprofile
+        fields = ["image"]
+
 
 class Login_form(forms.Form):
     """
