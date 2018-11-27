@@ -88,12 +88,12 @@ $(function(){
             cache: false,
             type: "POST",
             dataType:'json',
-            url:"/user/password/change/",
+            url:"/users/update/pwd/",
             data:$('#jsResetPwdForm').serialize(),
             async: true,
             success: function(data) {
-                if(data.password){
-                    Dml.fun.showValidateError($("#pwd"), data.password);
+                if(data.password1){
+                    Dml.fun.showValidateError($("#pwd"), data.password1);
                 }else if(data.password2){
                     Dml.fun.showValidateError($("#repwd"), data.password2);
                 }else if(data.status == "success"){

@@ -14,6 +14,27 @@ from utils.mixin_login import LoginRequiredMixin
 
 # Create your views here.
 
+class UpdatePwdView(View):
+    """
+    个人中心用户修改密码
+    """
+    def post(self,request):
+        modifyform = ModifyForm(request.POST)
+        if modifyform.is_valid():
+            pwd1 = request.POST.get('password1','')
+            pwd2 = request.POST.get('password2','')
+            if pwd1 == pwd2:
+                user = request.user
+                user.password = make_password(pwd2)
+                user.save()
+                return JsonResponse({'status': 'success'})
+
+            else:
+                return JsonResponse({'status': 'fail', 'msg': '密码不一致'})
+        else:
+            return JsonResponse(modifyform.errors)
+
+
 class UploadImageView(LoginRequiredMixin,View):
     """
     用户修改头像

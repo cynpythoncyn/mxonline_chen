@@ -128,7 +128,7 @@
             <form id="jsResetPwdForm" autocomplete="off">
                 <div class="box">
                     <span class="word2" >新&nbsp;&nbsp;密&nbsp;&nbsp;码</span>
-                    <input type="password" id="pwd" name="password" placeholder="6-20位非中文字符"/>
+                    <input type="password" id="pwd" name="password1" placeholder="6-20位非中文字符"/>
                 </div>
                 <div class="box">
                     <span class="word2" >确定密码</span>
@@ -138,7 +138,7 @@
                 <div class="button">
                     <input id="jsResetPwdBtn" type="button" value="提交" />
                 </div>
-                <input type='hidden' name='csrfmiddlewaretoken' value='DaP7IUKm9FA9nELA9YUlYYWpyIDdCiIP' />
+                {% csrf_token %}
             </form>
         </div>
     </div>
