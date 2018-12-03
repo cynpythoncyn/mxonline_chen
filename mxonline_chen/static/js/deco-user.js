@@ -12,7 +12,7 @@ function sendCodeChangeEmail($btn){
         cache: false,
         type: "get",
         dataType:'json',
-        url:"/user/send_email_code_change/",
+        url:"/users/send_email_code_change/",
         data:$('#jsChangeEmailForm').serialize(),
         async: true,
         beforeSend:function(XMLHttpRequest){
@@ -24,7 +24,7 @@ function sendCodeChangeEmail($btn){
                 Dml.fun.showValidateError($('#jsChangeEmail'), data.email);
             }else if(data.status == 'success'){
                 Dml.fun.showErrorTips($('#jsChangeEmailTips'), "邮箱验证码已发送");
-            }else if(data.status == 'failure'){
+            }else if(data.status == 'fail'){
                  Dml.fun.showValidateError($('#jsChangeEmail'), "邮箱验证码发送失败");
             }
         },
@@ -40,7 +40,6 @@ function changeEmailSubmit($btn){
 var verify = verifyDialogSubmit(
         [
           {id: '#jsChangeEmail', tips: Dml.Msg.epMail, errorTips: Dml.Msg.erMail, regName: 'email', require: true},
-          {id: '#jsChangeEmailCode', tips: Dml.Msg.epEmCode, errorTips: Dml.Msg.erEmCode, regName: 'emailCode',require: true}
         ]
     );
     if(!verify){
@@ -50,7 +49,7 @@ var verify = verifyDialogSubmit(
         cache: false,
         type: 'post',
         dataType:'json',
-        url:"/user/email/update/",
+        url:"/users/update_email/",
         data:$('#jsChangeEmailForm').serialize(),
         async: true,
         beforeSend:function(XMLHttpRequest){
@@ -61,8 +60,6 @@ var verify = verifyDialogSubmit(
         success: function(data) {
             if(data.email){
                 Dml.fun.showValidateError($('#jsChangeEmail'), data.email);
-            }else if(data.email_code){
-                Dml.fun.showValidateError($('#jsChangeEmailCode'), data.email_code);
             }else if(data.status == "success"){
                 Dml.fun.showErrorTips($('#jsChangePhoneTips'), "邮箱信息更新成功");
                 setTimeout(function(){location.reload();},1000);
@@ -102,6 +99,9 @@ $(function(){
                         h2:'修改密码成功，请重新登录!',
                     });
                     Dml.fun.winReload();
+                }else if(data.status == "fail"){
+                    Dml.fun.showValidateError($("#pwd"), data.msg);
+                    Dml.fun.showValidateError($("#repwd"), data.msg);
                 }
             }
         });

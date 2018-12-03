@@ -8,21 +8,55 @@ from django.http import JsonResponse
 
 from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
-from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm,UploadImageForm
+from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm
 from utils.mixin_login import LoginRequiredMixin
 
 
 # Create your views here.
 
+
+class SendEmailCodeView(LoginRequiredMixin, View):
+    """
+    获取邮箱验证码
+    """
+
+    def get(self, request):
+        email = request.GET.get('email', '')
+        if Userprofile.objects.filter(email=email):
+            return JsonResponse({'email': '邮箱已存在！'})
+
+        send_register_email(email=email, send_type='update_email')
+        return JsonResponse({'status': 'success'})
+
+
+class UpdateEmailView(LoginRequiredMixin, View):
+    """
+    个人中心，用户修改邮箱
+    """
+
+    def post(self, request):
+        email = request.POST.get('email', '')
+        code = request.POST.get('code', '')
+        existed_records = EmailVerifyRecord.objects.filter(email=email, code=code, send_type='update_email')
+        if existed_records:
+            user = request.user
+            user.email = email
+            user.save()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'email': '验证码错误！', })
+
+
 class UpdatePwdView(View):
     """
     个人中心用户修改密码
     """
-    def post(self,request):
+
+    def post(self, request):
         modifyform = ModifyForm(request.POST)
         if modifyform.is_valid():
-            pwd1 = request.POST.get('password1','')
-            pwd2 = request.POST.get('password2','')
+            pwd1 = request.POST.get('password1', '')
+            pwd2 = request.POST.get('password2', '')
             if pwd1 == pwd2:
                 user = request.user
                 user.password = make_password(pwd2)
@@ -35,12 +69,13 @@ class UpdatePwdView(View):
             return JsonResponse(modifyform.errors)
 
 
-class UploadImageView(LoginRequiredMixin,View):
+class UploadImageView(LoginRequiredMixin, View):
     """
     用户修改头像
     """
-    def post(self,request):
-        uploadimage = UploadImageForm(request.POST,request.FILES,instance=request.user)
+
+    def post(self, request):
+        uploadimage = UploadImageForm(request.POST, request.FILES, instance=request.user)
         if uploadimage.is_valid():
             # 如果不传入instance，
             # userimage = uploadimage.cleaned_data['image']
@@ -48,19 +83,21 @@ class UploadImageView(LoginRequiredMixin,View):
             # request.user.save()
             uploadimage.save()
             return JsonResponse({
-                "status":"success"
+                "status": "success"
             })
-        return JsonResponse({"status":"fail"})
+        return JsonResponse({"status": "fail"})
 
-class UserinfoView(LoginRequiredMixin,View):
+
+class UserinfoView(LoginRequiredMixin, View):
     """
     用户个人中心
     """
-    def get(self,request):
 
-        return render(request,'usercenter-info.html',{
+    def get(self, request):
+        return render(request, 'usercenter-info.html', {
 
         })
+
 
 
 class ModifyPwdView(View):

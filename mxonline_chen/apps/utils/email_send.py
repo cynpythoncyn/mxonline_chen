@@ -44,3 +44,11 @@ def send_register_email(email, send_type='register'):
         if send_status:
             pass
 
+    elif send_type == "update_email":
+        email_title = "获取邮箱验证码"
+        email_body = "你的邮箱验证码为：{0}".format(code)
+        send_status = send_mail(subject=email_title, message="", from_email=EMAIL_FROM, recipient_list=[email, ],
+                                html_message=email_body)
+        if send_status:
+            pass
+
