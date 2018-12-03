@@ -10,9 +10,22 @@ from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
 from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm, UpdateInfoForm
 from utils.mixin_login import LoginRequiredMixin
+from operation.models import UserCourse
 
 
 # Create your views here.
+
+class MycourseView(View):
+    """
+    用户中心，我的课程
+    """
+    def get(self,request):
+        user_courses = UserCourse.objects.all()
+
+
+        return render(request,'usercenter-mycourse.html',{
+            "user_courses":user_courses
+        })
 
 
 class SendEmailCodeView(LoginRequiredMixin, View):

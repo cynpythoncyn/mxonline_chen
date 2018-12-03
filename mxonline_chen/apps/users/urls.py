@@ -1,7 +1,7 @@
 
 from django.conf.urls import url,include
 
-from .views import UserinfoView,UploadImageView,UpdatePwdView,UpdateEmailView,SendEmailCodeView
+from .views import UserinfoView,UploadImageView,UpdatePwdView,UpdateEmailView,SendEmailCodeView,MycourseView
 urlpatterns = [
     # 用户个人中心首页
     url(r'^info/$',UserinfoView.as_view(),name='userinfo'),
@@ -17,6 +17,9 @@ urlpatterns = [
 
     # 用户修改邮箱
     url(r'^update_email/$',UpdateEmailView.as_view(), name='update_email'),
+
+    # 用户中心我的课程
+    url(r'^mycourse/$',MycourseView.as_view(),name='mycourse')
 
 
 ]
