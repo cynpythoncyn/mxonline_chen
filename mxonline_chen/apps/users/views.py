@@ -8,7 +8,7 @@ from django.http import JsonResponse
 
 from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
-from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm
+from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm, UpdateInfoForm
 from utils.mixin_login import LoginRequiredMixin
 
 
@@ -97,6 +97,14 @@ class UserinfoView(LoginRequiredMixin, View):
         return render(request, 'usercenter-info.html', {
 
         })
+
+    def post(self, request):
+        update_info = UpdateInfoForm(request.POST,instance=request.user)
+        if update_info.is_valid():
+            update_info.save()
+            return JsonResponse({'status':'success'})
+        else:
+            return JsonResponse(update_info.errors)
 
 
 

@@ -159,7 +159,7 @@ $(function(){
             cache: false,
             type: 'post',
             dataType:'json',
-            url:"/user/info/",
+            url:"/users/info/",
             data:$jsEditUserForm.serialize(),
             async: true,
             beforeSend:function(XMLHttpRequest){
@@ -169,10 +169,10 @@ $(function(){
             success: function(data) {
                 if(data.nick_name){
                     _showValidateError($('#nick_name'), data.nick_name);
-                }else if(data.birth_day){
-                   _showValidateError($('#birth_day'), data.birth_day);
-                }else if(data.district_name){
-                   _showValidateError($('#district_name'), data.district_name);
+                }else if(data.birday){
+                   _showValidateError($('#birth_day'), data.birday);
+                }else if(data.mobile){
+                   _showValidateError($('#mobile'), data.mobile);
                 }else if(data.status == "failure"){
                      Dml.fun.showTipsDialog({
                         title: '保存失败',

@@ -4,6 +4,15 @@ from captcha.fields import CaptchaField
 from .models import Userprofile
 
 
+class UpdateInfoForm(forms.ModelForm):
+    """
+    个人中心用户信息
+    """
+    class Meta:
+        model = Userprofile
+        fields = ['nick_name', 'gender', 'birday', 'address', 'mobile']
+
+
 class UploadImageForm(forms.ModelForm):
     """
     上传图片
