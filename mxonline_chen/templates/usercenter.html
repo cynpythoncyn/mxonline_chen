@@ -68,16 +68,23 @@
 
 
 <!--crumbs start-->
-{% block custom_bread %}
+<section>
+    <div class="wp">
+        <ul  class="crumbs">
+            <li><a href="{% url 'index' %}">首页</a>></li>
+            <li><a href="{% url 'users:userinfo' %}">个人中心</a>></li>
+            <li>{% block custom_bread %}{% endblock %}</li>
+        </ul>
+    </div>
+</section>
 
-{% endblock %}
 <section>
 	<div class="wp list personal_list">
 	<div class="left">
         <ul>
             <li class="active2"><a href="{% url 'users:userinfo' %}">个人资料</a></li>
             <li ><a href="{% url 'users:mycourse' %}">我的课程</a></li>
-            <li ><a href="usercenter-fav-org.html">我的收藏</a></li>
+            <li ><a href="{% url 'users:myfav_org' %}">我的收藏</a></li>
             <li >
                 <a href="usercenter-message.html" style="position: relative;">
                     我的消息
@@ -238,6 +245,69 @@
 <script src='{% static "js/plugins/jquery.upload.js" %}' type='text/javascript'></script>
 <script src="{% static 'js/validate.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/deco-user.js' %}"></script>
+<script type="text/javascript">
+    $('.jsDeleteFav_course').on('click', function(){
+        var _this = $(this),
+            favid = _this.attr('data-favid');
+        alert(favid)
+        $.ajax({
+                cache: false,
+                type: "POST",
+                url: "{% url "org:add_fav" %}",
+                data: {
+                    fav_type: 1,
+                    fav_id: favid,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                async: true,
+                success: function(data) {
+                    Dml.fun.winReload();
+                }
+            });
+    });
+
+    $('.jsDeleteFav_teacher').on('click', function(){
+            var _this = $(this),
+                favid = _this.attr('data-favid');
+            $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url "org:add_fav" %}",
+                    data: {
+                        fav_type: 3,
+                        fav_id: favid,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    async: true,
+                    success: function(data) {
+                        Dml.fun.winReload();
+                    }
+                });
+        });
+
+
+    $('.jsDeleteFav_org').on('click', function(){
+            var _this = $(this),
+                favid = _this.attr('data-favid');
+            $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url "org:add_fav" %}",
+                    data: {
+                        fav_type: 2,
+                        fav_id: favid,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    async: true,
+                    success: function(data) {
+                        Dml.fun.winReload();
+                    }
+                });
+        });
+</script>
+{% block custom_js %}
+
+{% endblock %}
 <script>
         var shareUrl = '',
             shareText = '',
@@ -299,8 +369,5 @@
         };
     with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
 </script>
-{% block custom_js %}
-
-{% endblock %}
 </body>
 </html>

@@ -10,21 +10,72 @@ from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
 from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm, UpdateInfoForm
 from utils.mixin_login import LoginRequiredMixin
-from operation.models import UserCourse
+from operation.models import UserCourse,UserFavorite
+from organization.models import CourseOrg,Teacher
+from course.models import Course
 
 
 # Create your views here.
+class MyfavCourseView(LoginRequiredMixin,View):
+    """
+    个人中心，我的收藏课程
+    """
+    def get(self,request):
+        courses_list = []
+        fav_cousers = UserFavorite.objects.filter(user=request.user,fav_type=1)
+        for fav_couser in fav_cousers:
+            course_id = fav_couser.fav_id
+            course = Course.objects.get(id=course_id)
+            courses_list.append(course)
+        return render(request,'usercenter-fav-course.html',{
+            "courses_list":courses_list,
+        })
 
-class MycourseView(View):
+
+class MyfavTeacherView(LoginRequiredMixin,View):
+    """
+    用户中心，我的收藏讲师
+    """
+    def get(self,request):
+        teachers_list = []
+        fav_teachers = UserFavorite.objects.filter(user=request.user,fav_type=3)
+        for fav_teacher in fav_teachers:
+            teacher_id = fav_teacher.fav_id
+
+            teacher = Teacher.objects.get(id=teacher_id)
+            teachers_list.append(teacher)
+
+        return render(request,'usercenter-fav-teacher.html',{
+            "teachers_list":teachers_list
+
+        })
+
+
+class MyfavOrgView(LoginRequiredMixin,View):
+    """
+    用户中心，我的收藏机构
+    """
+    def get(self, request):
+        orgs_list = []
+        fav_orgs = UserFavorite.objects.filter(user=request.user,fav_type=2)
+        for fav_org in fav_orgs:
+            org_id = fav_org.fav_id
+            org = CourseOrg.objects.get(id=org_id)
+            orgs_list.append(org)
+
+        return render(request, 'usercenter-fav-org.html', {
+            "orgs_list":orgs_list
+        })
+
+
+class MycourseView(LoginRequiredMixin,View):
     """
     用户中心，我的课程
     """
-    def get(self,request):
-        user_courses = UserCourse.objects.all()
-
-
-        return render(request,'usercenter-mycourse.html',{
-            "user_courses":user_courses
+    def get(self, request):
+        user_courses = UserCourse.objects.filter(user=request.user)
+        return render(request, 'usercenter-mycourse.html', {
+            "user_courses": user_courses
         })
 
 
@@ -112,13 +163,12 @@ class UserinfoView(LoginRequiredMixin, View):
         })
 
     def post(self, request):
-        update_info = UpdateInfoForm(request.POST,instance=request.user)
+        update_info = UpdateInfoForm(request.POST, instance=request.user)
         if update_info.is_valid():
             update_info.save()
-            return JsonResponse({'status':'success'})
+            return JsonResponse({'status': 'success'})
         else:
             return JsonResponse(update_info.errors)
-
 
 
 class ModifyPwdView(View):
