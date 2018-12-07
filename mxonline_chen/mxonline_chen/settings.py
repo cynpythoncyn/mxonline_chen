@@ -25,9 +25,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, "extra_apps"))
 SECRET_KEY = 'c9=^@y*y-d^!@4ce*s#liex7!h0mvrlpn-wz3xx-c_-%4sdreo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 AUTHENTICATION_BACKENDS = [
@@ -152,3 +152,5 @@ EMAIL_FROM = "1105690826@qq.com"
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# 自定义静态文件路径
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')

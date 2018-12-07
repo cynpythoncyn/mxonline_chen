@@ -46,6 +46,8 @@ urlpatterns = [
     # 配置上传图片的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 
+    # 自定义静态文件路径
+    url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
 
     # 配置用户个人中心
     url(r'^users/',include('users.urls',namespace='users'))
