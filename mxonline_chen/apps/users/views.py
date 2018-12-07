@@ -1,10 +1,11 @@
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from django.views.generic.base import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
 from pure_pagination import PageNotAnInteger,Paginator
 
@@ -45,7 +46,6 @@ class MymessageView(LoginRequiredMixin,View):
             "all_messages":all_messages,
 
         })
-
 
 
 class MyfavCourseView(LoginRequiredMixin,View):
@@ -357,8 +357,18 @@ class LoginView(View):
                 return render(request, 'login.html', {"msg": "用户名或密码错误！"})
 
         else:
+
             return render(request, 'login.html', {"loginform": loginform})
 
+
+class LogoutView(View):
+    """
+    用户登出接口
+    """
+    def get(self,request):
+        logout(request)
+
+        return HttpResponseRedirect(reverse("index"))
 
 class IndexView(View):
     # 慕学在线网 首页

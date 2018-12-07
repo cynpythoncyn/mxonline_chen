@@ -19,7 +19,7 @@ from django.views.generic import TemplateView
 from django.views.static import serve
 
 import xadmin
-from users.views import IndexView, LoginView, RegisterView, AciveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView
+from users.views import IndexView, LoginView, RegisterView, AciveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView,LogoutView
 from organization.views import OrglistView
 from mxonline_chen.settings import MEDIA_ROOT
 
@@ -29,6 +29,7 @@ urlpatterns = [
     # url(r'^login/$',login_chen,name='login'),
     # url(r'^login/$',TemplateView.as_view(template_name='login.html'),name='login'),
     url(r'^login/$', LoginView.as_view(), name='login'),
+    url(r'^logout/$',LogoutView.as_view(),name='logout'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^active/(?P<active_code>.*)/$', AciveUserView.as_view(), name='user_active'),

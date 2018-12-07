@@ -6,6 +6,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Q
 
+from course.models import Course
 from .models import CourseOrg, CityDict, Teacher
 from .forms import UserAskForm
 from operation.models import UserFavorite
@@ -110,6 +111,26 @@ class AddfavView(View):
         if exist_records:
             # 如果记录存在，则表示用户取消收藏
             exist_records.delete()
+
+            # 完善用户各个取消收藏数的功能
+            if int(fav_type) == 1:
+                course = Course.objects.get(id=int(fav_id))
+                course.fav_nums -= 1
+                if course.fav_nums < 0:
+                    course.fav_nums = 0
+                course.save()
+            elif int(fav_type) == 2:
+                course_org = CourseOrg.objects.get(id=int(fav_id))
+                course_org.fav_nums -= 1
+                if course_org.fav_nums < 0:
+                    course_org.fav_nums = 0
+                course_org.save()
+            elif int(fav_type) == 3:
+                teacher = Teacher.objects.get(id=int(fav_id))
+                teacher.fav_nums -= 1
+                if teacher.fav_nums < 0:
+                    teacher.fav_nums = 0
+                teacher.save()
             return JsonResponse({'status': 'success', 'msg': '收藏'})
         else:
             user_fav = UserFavorite()
@@ -118,6 +139,21 @@ class AddfavView(View):
                 user_fav.fav_type = int(fav_type)
                 user_fav.fav_id = int(fav_id)
                 user_fav.save()
+
+                # 完善用户已收藏数个数增加的功能
+                if int(fav_type) == 1:
+                    course = Course.objects.get(id=int(fav_id))
+                    course.fav_nums += 1
+                    course.save()
+                elif int(fav_type) == 2:
+                    course_org = CourseOrg.objects.get(id=int(fav_id))
+                    course_org.fav_nums += 1
+                    course_org.save()
+                elif int(fav_type) == 3:
+                    teacher = Teacher.objects.get(id=int(fav_id))
+                    teacher.fav_nums += 1
+                    teacher.save()
+
                 return JsonResponse({'status': 'success', 'msg': '已收藏'})
             else:
                 return JsonResponse({'status': 'fail', 'msg': '收藏出错'})
