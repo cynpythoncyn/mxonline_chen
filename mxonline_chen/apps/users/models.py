@@ -28,6 +28,11 @@ class Userprofile(AbstractUser):
     def __str__(self):
         return self.username
 
+    def get_unread_nums(self):
+        # 获取用户未读消息的数量
+        from operation.models import UserMessage
+        return UserMessage.objects.filter(user=self.id,has_read=False).count()
+
 
 class EmailVerifyRecord(models.Model):
     code = models.CharField(max_length=20, verbose_name="验证码")

@@ -6,16 +6,48 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.http import JsonResponse
 
+from pure_pagination import PageNotAnInteger,Paginator
+
 from utils.email_send import send_register_email
 from .models import Userprofile, EmailVerifyRecord
 from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm, UpdateInfoForm
 from utils.mixin_login import LoginRequiredMixin
-from operation.models import UserCourse,UserFavorite
+from operation.models import UserCourse,UserFavorite,UserMessage
 from organization.models import CourseOrg,Teacher
 from course.models import Course
 
 
 # Create your views here.
+
+class MymessageView(LoginRequiredMixin,View):
+    """
+    个人中心，我的消息
+    """
+    def get(self,request):
+        all_messages = UserMessage.objects.filter(user=request.user.id)
+
+        # 用户进入个人消息后清空未读消息的记录
+        all_unread_msgs = UserMessage.objects.filter(user=request.user.id,has_read=False)
+        for unread_msg in all_unread_msgs:
+            unread_msg.has_read = True
+            unread_msg.save()
+
+        # 个人消息分页的功能
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        p = Paginator(all_messages,3,request=request)
+        all_messages = p.page((page))
+
+        return render(request,'usercenter-message.html',{
+            "all_messages":all_messages,
+
+        })
+
+
+
 class MyfavCourseView(LoginRequiredMixin,View):
     """
     个人中心，我的收藏课程
@@ -272,6 +304,12 @@ class RegisterView(View):
             userporfile.is_active = False
             userporfile.password = make_password(password)
             userporfile.save()
+
+            # 写入欢迎注册消息
+            user_message = UserMessage()
+            user_message.user = userporfile.id
+            user_message.message = "欢迎注册本网站"
+            user_message.save()
 
             send_register_email(username, 'register')
             return render(request, 'login.html')
