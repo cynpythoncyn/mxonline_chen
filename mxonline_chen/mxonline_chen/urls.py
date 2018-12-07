@@ -21,7 +21,7 @@ from django.views.static import serve
 import xadmin
 from users.views import IndexView, LoginView, RegisterView, AciveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView,LogoutView
 from organization.views import OrglistView
-from mxonline_chen.settings import MEDIA_ROOT
+from mxonline_chen.settings import MEDIA_ROOT,STATIC_ROOT
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
@@ -46,7 +46,11 @@ urlpatterns = [
     # 配置上传图片的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 
+
     # 配置用户个人中心
     url(r'^users/',include('users.urls',namespace='users'))
 
 ]
+#全局404页面配置
+handler404 = 'users.views.page_not_found'
+handler500 = 'users.views.page_error'

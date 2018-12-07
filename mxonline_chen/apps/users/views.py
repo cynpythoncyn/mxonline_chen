@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from pure_pagination import PageNotAnInteger,Paginator
 
 from utils.email_send import send_register_email
-from .models import Userprofile, EmailVerifyRecord
+from .models import Userprofile, EmailVerifyRecord, Banner
 from .forms import Login_form, RegisterForm, ForgetForm, ModifyForm, UploadImageForm, UpdateInfoForm
 from utils.mixin_login import LoginRequiredMixin
 from operation.models import UserCourse,UserFavorite,UserMessage
@@ -350,7 +350,7 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, 'index.html')
+                    return HttpResponseRedirect(reverse("index"))
                 else:
                     return render(request, 'login.html', {"msg": "用户未激活！"})
             else:
@@ -370,11 +370,23 @@ class LogoutView(View):
 
         return HttpResponseRedirect(reverse("index"))
 
+
 class IndexView(View):
     # 慕学在线网 首页
     def get(self, request):
         # 取出轮播图
+        all_banners = Banner.objects.all().order_by('index')
+        courses = Course.objects.filter(is_banner=False)[:6]
+        banner_courses = Course.objects.filter(is_banner=True)[:3]
+        couser_orgs = CourseOrg.objects.all()[:15]
 
         return render(request, 'index.html', {
+            "all_banners":all_banners,
+            "courses":courses,
+            "banner_courses":banner_courses,
+            "couser_orgs":couser_orgs,
 
         })
+
+
+

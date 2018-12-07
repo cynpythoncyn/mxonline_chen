@@ -151,3 +151,4 @@ EMAIL_FROM = "1105690826@qq.com"
 # 图片上传保存路径
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
