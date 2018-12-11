@@ -11,6 +11,13 @@ class Courseadmin(object):
     list_editable = ['degree', 'desc']  # 列表页进行编辑的字段
     refresh_times = [3,5]  # 页面定时刷新
     style_fields = {"detail": "ueditor"}
+    import_excel = True
+
+    def post(self, request, *args, **kwargs):
+        # 保存导入的文件，对文件内容可以自定义保存
+        if 'excel' in request.FILES:
+            pass
+        return super(Courseadmin, self).post(request, args, kwargs)
 
 class Lessonadmin(object):
     list_display = ['course', 'name', 'add_time']
