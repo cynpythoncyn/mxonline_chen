@@ -25,9 +25,9 @@ sys.path.insert(0, os.path.join(BASE_DIR, "extra_apps"))
 SECRET_KEY = 'c9=^@y*y-d^!@4ce*s#liex7!h0mvrlpn-wz3xx-c_-%4sdreo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 # Application definition
 AUTHENTICATION_BACKENDS = [
@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'captcha',  # 集成图片验证码
     'pure_pagination',  # 集成分页功能
+    'DjangoUeditor',
 ]
 AUTH_USER_MODEL = 'users.Userprofile'  # 自定义用户模型类，要在setting中指定
 
@@ -153,4 +154,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # 自定义静态文件路径
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')

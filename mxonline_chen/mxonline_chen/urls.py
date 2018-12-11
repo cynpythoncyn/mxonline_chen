@@ -21,7 +21,7 @@ from django.views.static import serve
 import xadmin
 from users.views import IndexView, LoginView, RegisterView, AciveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView,LogoutView
 from organization.views import OrglistView
-from mxonline_chen.settings import MEDIA_ROOT,STATIC_ROOT
+from mxonline_chen.settings import MEDIA_ROOT
 
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
@@ -47,10 +47,13 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve, {'document_root': MEDIA_ROOT}),
 
     # 自定义静态文件路径
-    url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
+    # url(r'^static/(?P<path>.*)$', serve, {"document_root": STATIC_ROOT}),
 
     # 配置用户个人中心
-    url(r'^users/',include('users.urls',namespace='users'))
+    url(r'^users/',include('users.urls',namespace='users')),
+
+    # ueditor 富文本编辑器相关url
+    url(r'^ueditor/',include('DjangoUeditor.urls' )),
 
 ]
 #全局404页面配置
