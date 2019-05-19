@@ -20,4 +20,3 @@ urlpatterns = [
     url(r'^video/(?P<video_id>\d+)/$', Video_playView.as_view(), name='video_play'),
 
 ]
-# 这是test
